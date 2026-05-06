@@ -1,27 +1,21 @@
 ---
 name: drupal-ddd
 description: >-
-  Apply Domain-Driven Design patterns in Drupal 11 custom modules. Covers both
+  Apply Domain-Driven Design patterns in Drupal 11 custom modules. Covers
   strategic design (Bounded Contexts, Ubiquitous Language, Context Maps) and
   tactical patterns (Value Objects, Entities, Aggregates, Domain Services,
   Domain Events, Factories, Application Services, Anti-Corruption Layers).
-  Also covers the mandatory Repository Design Pattern for ALL entity interactions —
-  any code involving EntityTypeManager, EntityStorage, entity queries, or entity
-  CRUD operations must follow the repository architecture documented here.
-  All patterns are adapted from classic DDD (as taught in the "DDD in PHP" book)
-  to work with Drupal's Entity API and PDO-based storage instead of Doctrine ORM.
-  Use this skill whenever designing module architecture, modeling a complex domain
-  in Drupal, deciding how to structure business logic, or when terms like
-  "value object", "aggregate", "domain event", "bounded context", "rich model",
-  "anemic model", "application service", "domain service", "anti-corruption layer",
-  "repository", "repository pattern", or "hexagonal architecture" come up.
-  Also use when writing or reviewing code that loads, queries, saves, or deletes
-  Drupal entities. Also use when the user is deciding how to split responsibilities
-  across Drupal modules, wants to avoid fat controllers or hook-heavy architectures,
-  needs to integrate with external APIs cleanly, or asks about structuring complex
-  business rules in Drupal. Even for questions like "where should this logic go?"
-  or "how should I organize this module?" — this skill provides the architectural
-  framework for making those decisions.
+  Includes the mandatory Repository Pattern for ALL entity interactions —
+  code using EntityTypeManager, EntityStorage, entity queries, or CRUD must
+  follow this architecture. Patterns adapted from "DDD in PHP" to Drupal
+  Entity API. Use when designing module architecture, modeling domains,
+  structuring business logic, or when terms like "value object", "aggregate",
+  "domain event", "bounded context", "rich model", "anemic model",
+  "application service", "domain service", "anti-corruption layer",
+  "repository pattern", or "hexagonal architecture" come up. Also for code
+  that loads, queries, saves, or deletes entities, splitting modules,
+  avoiding fat controllers, integrating external APIs, or deciding where
+  logic belongs.
 ---
 
 # Domain-Driven Design in Drupal

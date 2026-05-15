@@ -122,7 +122,7 @@ Skipping the reference is the exception, not the norm. Never silently omit it.
 
 **Always use the fully qualified project path in footers — never a bare `#N`.** A bare `#N` is ambiguous: on platforms like GitLab it only links within the current project context, which breaks when commits are cherry-picked, mirrored, or viewed outside the original project. The fully qualified path (`owner/repo#N`) is unambiguous everywhere.
 
-Run `git remote get-url origin` and parse the namespace/project path (e.g., `sparkfabrik/sf-awesome-copilot` on GitHub, `sparkfabrik-innovation-team/r-d/ai/project` on GitLab). When the user provides a bare `#N`, resolve it to `<project-path>#N`:
+Run `git remote get-url origin` and parse the namespace/project path (e.g., `sparkfabrik/sf-agents-harness` on GitHub, `sparkfabrik-innovation-team/r-d/ai/project` on GitLab). When the user provides a bare `#N`, resolve it to `<project-path>#N`:
 
 | User provides      | Footer                                                                  |
 | ------------------ | ----------------------------------------------------------------------- |

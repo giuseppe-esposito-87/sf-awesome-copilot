@@ -17,6 +17,7 @@ Changes are grouped by date.
 
 ### Changed
 
+- Project renamed from `sf-awesome-copilot` to `sf-agents-harness` -- updated descriptions, references, and GitHub metadata to reflect broader scope beyond any single AI coding tool
 - README: Removed VS Code Insiders requirement for `chat.useAgentSkills` directive -- Agent Skills are now available in the standard VS Code release
 - `glab` skill: require fully-qualified references (`group/project#N`, `group/project!N`) in all written content (descriptions, comments, notes) to prevent broken cross-project links
 - `glab` skill: auto-closing issues on merge via `Closes`/`Fixes` directives in MR descriptions is now optional -- the agent asks the user before including a closing reference, since auto-close is not always desired

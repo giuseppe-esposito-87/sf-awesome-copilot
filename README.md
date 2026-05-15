@@ -1,6 +1,6 @@
-# SF Awesome Copilot
+# SF Agents Harness
 
-Experimental catalog of skills, agents and prompts for GitHub Copilot.
+Catalog of reusable skills, agents and prompts for AI coding assistants.
 
 Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/prompts).
 
@@ -9,7 +9,7 @@ Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot/t
 ## Structure
 
 ```
-├── agents/          # Custom Copilot agents
+├── agents/          # Agent definitions
 ├── skills/          # Skills organized by technology
 ```
 

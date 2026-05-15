@@ -249,7 +249,7 @@ If the user specified exact labels, use them. Otherwise:
 
 Do NOT invent label names. Only propose labels that actually exist in the project.
 
-**Create an MR directly from an issue**: `glab mr for 42` creates a branch and linked MR that auto-closes the issue on merge.
+**Create an MR directly from an issue**: `glab mr for 42` creates a branch and a linked MR. Note that this command automatically adds a closing reference in the MR description, which will close the issue on merge. Ask the user first if this is the desired behaviour.
 
 ---
 
@@ -258,14 +258,14 @@ Do NOT invent label names. Only propose labels that actually exist in the projec
 ### Creating MRs
 
 ```bash
-glab mr create --title "Fix login crash" --description "Closes group/project#42" \
+glab mr create --title "Fix login crash" --description "Relates to group/project#42" \
   --target-branch develop --reviewer "marco" --assignee "@me"
 glab mr create --fill              # title/description from commits
 glab mr create --draft --fill      # draft MR
 glab mr create --fill --squash-before-merge --remove-source-branch  # with merge behavior flags
 ```
 
-Include `Closes group/project#42` or `Fixes group/project#42` in the description to auto-close issues on merge. Always use fully-qualified references -- never short forms like `Closes #42`.
+**Auto-closing issues on merge is optional.** Including `Closes group/project#42` or `Fixes group/project#42` in the MR description will automatically close the linked issue when the MR is merged — but this is not always desirable (e.g., when the issue tracks broader work, or closing it automatically is a project policy violation). **Always ask the user** whether they want the issue to be auto-closed on merge before adding a closing directive. If they confirm, use a fully-qualified reference — never a short form like `Closes #42`.
 
 > **`--squash` vs `--squash-before-merge`**: these are different flags on different commands. `glab mr create` accepts `--squash-before-merge` (configures the MR so commits will be squashed when eventually merged). `glab mr merge` accepts `--squash` (squashes commits at merge time). Using `--squash` with `glab mr create` will fail with "Unknown flag". Same applies to `--remove-source-branch`: both commands support it, but `--when-pipeline-succeeds` is only available on `glab mr merge`.
 

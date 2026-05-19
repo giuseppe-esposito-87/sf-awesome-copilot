@@ -359,8 +359,12 @@ sync_skill() {
   cp -a "$build_dir"/. "$target_dir"/
 
   # Restore preserved files
+  # Remove the destination first: if it already exists (e.g. evals/ was never
+  # wiped because it's in the skip list), cp -a would nest the source inside
+  # the existing directory instead of replacing it, creating evals/evals/.
   for preserve in custom-sections.md evals; do
     if [[ -e "${preserve_dir}/${preserve}" ]]; then
+      rm -rf "${target_dir:?}/${preserve}"
       cp -a "${preserve_dir}/${preserve}" "${target_dir}/${preserve}"
     fi
   done

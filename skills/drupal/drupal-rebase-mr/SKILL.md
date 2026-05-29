@@ -1,14 +1,6 @@
 ---
 name: drupal-rebase-mr
-description: >
-  Rebase a Drupal.org issue merge request onto its target branch (or a newer version branch).
-  Use this skill whenever the user mentions rebasing a Drupal merge request, rebasing a drupal.org
-  issue, fixing merge conflicts on a Drupal MR, updating a Drupal contribution branch, or wants
-  to bring a Drupal.org issue fork up to date. Also trigger when the user pastes a drupal.org
-  issue URL or git.drupalcode.org MR URL and mentions rebase, update, conflicts, or "bring up to
-  date". Even if the user just says "rebase this drupal issue" or "update this MR" with a
-  drupalcode.org link, this skill is what they need. Handles both same-branch rebases and
-  cross-version rebases (e.g., 10.x to 11.x).
+description: 'Rebase a Drupal.org issue merge request onto its target branch (or a newer version branch). Use this skill whenever the user mentions rebasing a Drupal merge request, rebasing a drupal.org issue, fixing merge conflicts on a Drupal MR, updating a Drupal contribution branch, or wants to bring a Drupal.org issue fork up to date. Also trigger when the user pastes a drupal.org issue URL or git.drupalcode.org MR URL and mentions rebase, update, conflicts, or "bring up to date". Even if the user just says "rebase this drupal issue" or "update this MR" with a drupalcode.org link, this skill is what they need. Handles both same-branch rebases and cross-version rebases (e.g., 10.x to 11.x).'
 ---
 
 # Drupal Merge Request Rebase Skill

@@ -22,6 +22,16 @@ interfaces, or construction techniques. Each record describes forces at play and
 a single decision in response, making the motivation behind past decisions
 visible to everyone on the team, present and future.
 
+An ADR records _why_ a decision was taken, not _how_ to carry it out.
+Procedures, commands, release steps and file layouts are true only at the
+moment someone applies them; a month later they are noise, a year later they
+are wrong, and the record that holds them stops being trusted. That material
+belongs in a how-to, a runbook, a merge request or release notes, which the
+ADR may link to. Apply this test to every sentence before it goes into a
+record: **would it still be true and useful after the change has shipped and
+been forgotten?** If it only matters while someone is executing it, it is not
+part of the decision.
+
 ## Workflow overview
 
 1. **Detect environment** — find the ADR directory and check for `adr-tools`
@@ -31,6 +41,40 @@ visible to everyone on the team, present and future.
 5. **Explore consequences** — positive, negative, and neutral outcomes
 6. **Confirm status** — proposed, accepted, deprecated, or superseded
 7. **Create the file** — using `adr-tools` or manually
+8. **Refresh the ADR index** — keep the project's ADR table of contents current
+
+## The frontmatter standard
+
+Every ADR carries a YAML frontmatter block so tooling and coding agents can
+index records without reading the whole file:
+
+```yaml
+---
+title: 12. Use paragraphs for editorial layouts
+description: >-
+  A short, self-contained summary of the decision, at most 1024 characters
+  (same spirit as a skill description): what was decided and the one reason
+  that matters most.
+status: accepted
+date: 2026-08-20
+---
+```
+
+Rules:
+
+- **`title`** mirrors the H1 exactly (number and short noun phrase).
+- **`description`** is at most 1024 characters, one to three plain sentences,
+  understandable without opening the record. Write it last, after the body,
+  so it summarizes what was actually written.
+- **`status`** and **`date`** mirror the body's Status and Date; when the
+  status changes (for example to superseded), update both places.
+- The body below the block stays plain Nygard format, so `adr-tools` and
+  other consumers keep working.
+
+**Backfill:** when this skill touches a legacy record that has no
+frontmatter (for example to mark it superseded), add the block, deriving
+`title` from the H1, `status` and `date` from the body, and writing a fresh
+`description` from the Decision section.
 
 ## Step 1: Detect the environment
 
@@ -66,6 +110,7 @@ find . -maxdepth 4 -name "*.md" -path "*/adr/*" -o -name "*.md" -path "*/ADR/*" 
 ```
 
 If found, scan existing ADRs to determine:
+
 - The current numbering (so the next ADR gets the right number)
 - The naming convention used (e.g., `0001-title.md` vs `adr-001-title.md`)
 - A brief summary of each existing ADR (title + status) — you'll need this
@@ -86,9 +131,20 @@ adr init <chosen-directory>
 When initializing ADRs in a project that has none, the very first record
 (ADR 1) should always be the meta-decision "Record architecture decisions".
 If using `adr-tools`, `adr init` creates this automatically. When working
-manually, create it with this standard content:
+manually, create it with this standard content (frontmatter included; when
+`adr init` created the file, add the frontmatter block to it):
 
 ```markdown
+---
+title: 1. Record architecture decisions
+description: >-
+  Architecturally significant decisions are recorded as ADRs in this
+  directory, following the Nygard format with a YAML frontmatter block that
+  makes each record discoverable by tooling and coding agents.
+status: accepted
+date: YYYY-MM-DD
+---
+
 # 1. Record architecture decisions
 
 Date: YYYY-MM-DD
@@ -141,6 +197,7 @@ Ask the user:
 > tension.
 
 Guide them toward specifics:
+
 - What technology or architectural area does this affect?
 - What constraints or requirements are driving this?
 - Were there alternatives considered? (These become forces in the Context)
@@ -149,6 +206,12 @@ Guide them toward specifics:
 The Context section should read like a fair, factual description of the
 situation — not an argument for the decision. Think of it as setting the stage
 so a future reader understands what pressures existed.
+
+When the user answers with a sequence of steps ("first we do X, then Y, then
+we run Z"), do not transcribe it. A procedure is the _output_ of a decision,
+not a force. Ask what decision those steps implement and what made that
+decision necessary; that is the context. Note the steps separately and offer
+to put them in a how-to or runbook that the ADR links to.
 
 ## Step 3: Capture the decision
 
@@ -163,6 +226,23 @@ Ask the user:
 Help them frame it in active voice if needed. The decision should be specific
 enough that a future developer can understand exactly what was chosen, but not
 so detailed that it duplicates implementation docs.
+
+The Decision names what the team commits to and where that commitment stops.
+It does not say how to execute it. These do not belong in a Decision section:
+
+- Commands and tool invocations (`drush deploy`, `just ds-dev`, `composer
+require …`).
+- Install paths, directory layouts, class or hook names that implement the
+  decision.
+- Deploy, migration or rollback sequences ("take a dump, enable maintenance
+  mode, then …").
+- Temporary arrangements ("the old code stays for one release and a later
+  release removes it").
+
+Each of those is correct only until the next release and belongs in a how-to,
+a runbook or the merge request. If the user hands you a procedure, extract
+the decision it implements ("We will ship the theme as a Composer package and
+switch it through configuration import") and route the procedure elsewhere.
 
 ## Step 4: Check for superseded ADRs
 
@@ -188,6 +268,7 @@ of what changes.
 Ask the user:
 
 > What are the consequences of this decision? Think about:
+>
 > - What becomes easier or better?
 > - What becomes harder or more complex?
 > - What new constraints does this introduce?
@@ -196,6 +277,15 @@ Ask the user:
 Consequences of one ADR often become the context for future ADRs — this is
 expected and healthy.
 
+A consequence is a lasting change in the project's situation, not an
+instruction for the release that ships the decision. "Rolling back the theme
+switch now means restoring the database, because code and configuration do
+not land together" is a consequence. "Take a database dump right before
+running `drush deploy`" is a runbook step. "Local theme work now happens
+against an installed package instead of in-repo code" is a consequence. "Run
+`just ds-dev [branch]` to replace the locked package with a clone" is a
+how-to. Keep the first kind, move the second kind out and link to it.
+
 ## Step 6: Confirm status
 
 Ask the user:
@@ -203,6 +293,7 @@ Ask the user:
 > What's the status of this decision?
 
 Offer these options:
+
 - **Proposed** — stakeholders haven't agreed yet
 - **Accepted** — the team has agreed and will proceed
 - **Deprecated** — the decision is being phased out (rare for new ADRs)
@@ -215,12 +306,12 @@ For most new ADRs, the answer will be Proposed or Accepted.
 ### Title
 
 ADR titles are **short noun phrases** — not sentences, not verbs. They describe
-*what* was decided, not the action of deciding.
+_what_ was decided, not the action of deciding.
 
 Good: "LDAP for Multitenant Integration"
 Good: "Deployment on Ruby on Rails 3.0.10"
-Bad:  "We decided to use LDAP"
-Bad:  "Choosing a deployment platform"
+Bad: "We decided to use LDAP"
+Bad: "Choosing a deployment platform"
 
 ### Creating the file
 
@@ -250,6 +341,14 @@ paragraphs**. Bullets are acceptable for visual style, but not as an excuse for
 writing sentence fragments.
 
 ```markdown
+---
+title: N. Title as Short Noun Phrase
+description: >-
+  Short summary of the decision, at most 1024 characters.
+status: [proposed | accepted | deprecated | superseded]
+date: YYYY-MM-DD
+---
+
 # N. Title as Short Noun Phrase
 
 Date: YYYY-MM-DD
@@ -278,9 +377,31 @@ what changes as a result of this decision.]
 
 ### After creation
 
+- Walk through `references/review-checklist.md` against the draft, with
+  particular attention to the durability items; strip or relocate anything
+  that fails them before showing the draft
 - Show the user the full ADR content for review
 - Ask if they want to adjust anything
 - If using `adr-tools`, mention they can run `adr list` to see all ADRs
+
+## Step 8: Refresh the ADR index
+
+Projects usually expose their ADRs to coding agents through a table of
+contents in the root `AGENTS.md` (one line per record: linked title plus the
+frontmatter description). After creating or updating a record, keep that
+index current:
+
+- **Generated `AGENTS.md`** (the file starts with an `AUTOGENERATED by
+sparkfabrik/pkg_composer_plugin` banner): do not edit it. The index
+  regenerates from the frontmatter on the next package process run; tell the
+  user it will refresh on the next `pkg:install` (or run
+  `composer pkg:process` if available).
+- **Hand-maintained index** (an "Architecture Decision Records" section in
+  `AGENTS.md`, `CLAUDE.md`, or the docs index): add or update the new
+  record's line yourself, keeping the existing format.
+- **No index anywhere**: suggest adding one to the project's `AGENTS.md`
+  (or equivalent), since it is what lets agents discover past decisions
+  without scanning the directory.
 
 ## Writing guidelines
 
@@ -314,10 +435,20 @@ and are **non-negotiable**:
   be split into multiple ADRs. Nobody reads large documents.
 - **Numbers are permanent**: ADRs are numbered sequentially and monotonically.
   Numbers are never reused. If a decision is reversed, keep the old record but
-  mark it as superseded — it's still relevant to know what *was* the decision.
-- **Keep justification in Context, not Decision**: The Context describes *why*
-  (the forces); the Decision states *what* (the response). Don't re-argue
+  mark it as superseded — it's still relevant to know what _was_ the decision.
+- **Keep justification in Context, not Decision**: The Context describes _why_
+  (the forces); the Decision states _what_ (the response). Don't re-argue
   the rationale inside the Decision section.
 - **Don't restate requirements as consequences**: "The database will support
-  JSON" is a requirement. A consequence is what *changes* as a result:
+  JSON" is a requirement. A consequence is what _changes_ as a result:
   migration effort, new operational needs, doors opened or closed.
+- **Why, not how**: An ADR explains the reasoning behind a decision. It never
+  contains a procedure: no commands, no step-by-step release or migration
+  sequence, no install paths or implementation hook names, no "for one
+  release we keep X". That content is only valid while someone is applying
+  it and belongs in a how-to, a runbook, a merge request or release notes.
+  Link to those documents from the ADR instead of inlining them.
+- **Durable content only**: Every sentence must still be true and useful
+  after the change has shipped and been forgotten. If a sentence would need
+  updating at the next release, it is not part of the decision. Remove it or
+  move it.
